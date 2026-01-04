@@ -3,149 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyBlog | A Modern Blogging Platform</title>
-    <!-- Tailwind CSS for styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts for a modern look -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- Using Montserrat to maintain our established design -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Link to your external CSS file -->
+    <title>Medi-Blogs</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-<body class="text-gray-800">
+<body>
 
-    <!-- Header / Navigation Bar -->
-    <header class="site-header shadow-md sticky top-0 z-40">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-             <!-- Placeholder for left side to balance center logo -->
-            <div class="w-1/3"></div>
+    <header class="header">
+    <nav class="navbar container">
+        
+        <div class="nav-left">
+            <a href="#" class="logo">
+                <img src="Image/medi logo.png" alt="Medicaps University Logo">
+            </a>
+            <ul class="nav-links">
+                <li><a href="#" id="home-link">home</a></li>
+                <li><a href="#">about</a></li>
+                <li><a href="#">contact</a></li>
+                <li><a href="#">post</a></li>
+            </ul>
+        </div>
+        <div class="nav-right"> 
+            
+    <div id="auth-links" class="auth-buttons">
+        <button class="theme-toggle-btn">
+            <span class="icon-moon">🌙</span>
+            <span class="icon-sun">☀️</span>
+        </button>
+        <button class="btn btn-login">login</button>
+        <button class="btn btn-register">register</button>
+    </div>
 
-            <a href="#" class="logo">MyBlog</a>
+    <div id="user-info" class="auth-buttons hidden">
+        <span id="user-email"></span>
+        <button class="theme-toggle-btn">
+            <span class="icon-moon">🌙</span>
+            <span class="icon-sun">☀️</span>
+        </button>
+        <button id="create-post-nav-btn" class="btn btn-register">Create Post</button>
+        <button id="logout-btn" class="btn btn-login">Logout</button>
+    </div>
 
-            <div class="w-1/3 flex justify-end items-center">
-                <div id="auth-links" class="flex items-center space-x-4">
-                    <button id="login-btn" class="px-4 py-2">Login</button>
-                    <button id="register-btn" class="btn-primary px-4 py-2">Register</button>
-                </div>
-                <div id="user-info" class="hidden items-center space-x-4">
-                    <button id="create-post-nav-btn" class="btn-primary px-4 py-2">Create Post</button>
-                    <span id="user-email" class="text-sm"></span>
-                    <button id="logout-btn" class="px-4 py-2">Logout</button>
-                </div>
-            </div>
-        </nav>
-    </header>
+</div>
+    </nav>
+</header>
 
-    <!-- Main Content Area -->
-    <main class="container mx-auto p-6">
-        <!-- View for all posts -->
-        <div id="all-posts-view" class="main-content-card">
-            <h2 class="text-3xl font-bold mb-6 text-gray-800 border-b pb-2">Latest Posts</h2>
-            <div id="posts-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Posts will be dynamically inserted here -->
-            </div>
+    <div id="all-posts-view">
+        <main class="container">
+            <section class="categories">
+                <h3>Filter by Category</h3>
+                <div id="categories-container">
+                    </div>
+            </section>
+            
+            <section class="news-updates">
+                <h2>Latest Blogs</h2>
+                <div class="news-grid" id="posts-container">
+                    </div>
+            </section>
+
+            <section class="tagline">
+                <h2>Medicaps where Minds Ignite</h2>
+            </section>
+        </main>
+    </div>
+
+    <div id="single-post-view" class="container hidden">
         </div>
 
-        <!-- View for a single post -->
-        <div id="single-post-view" class="hidden main-content-card">
-            <!-- Single post content will be dynamically inserted here -->
+
+   <footer class="footer">
+    <div class="container footer-content">
+        
+        <div class="footer-left">
+            <a href="#" class="footer-logo-link">
+                <img src="Image/medi logo.png" alt="Medicaps University Logo" class="footer-logo-img">
+            </a>
+            <p class="footer-copyright">
+                © 2025 Medicaps University.<br>
+                All Rights Reserved.
+            </p>
         </div>
-    </main>
+        
+        <div class="footer-right">
+            
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <a href="#">PM Vidhyalaxmi Scheme</a>
+                <a href="#">Public Disclosure</a>
+                <a href="#">Carriers</a>
+                <a href="#">For faculty & staff</a>
+                <a href="#">collaboration</a>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Contact Us</h4>
+                <p>A.B Road Pighdambar, Rau,
+                   <br>Indore, Madhya Pradesh 453331
+                </p>
+                <p>9273131500</p>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Follow Us</h4>
+                <div class="footer-social">
+                    <a href="#" aria-label="Facebook" class="social-icon"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter" class="social-icon"><i class="fa-brands fa-twitter"></i> </a></a>
+                    <a href="#" aria-label="LinkedIn" class="social-icon"><i class="fa-brands fa-linkedin-in"></i> </a></a>
+                    <a href="#" aria-label="Instagram" class="social-icon"><i class="fa-brands fa-instagram"></i></a>
+                </div>
+            </div>
 
-    <!-- MODALS -->
+        </div> </div> </footer>
 
-    <!-- Login Modal -->
-    <div id="login-modal" class="fixed inset-0 z-50 hidden items-center justify-center modal-backdrop">
-        <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md modal">
-            <h2 class="text-2xl font-bold mb-4">Login</h2>
+    <div id="login-modal" class="modal-backdrop hidden">
+        <div class="modal-content">
+            <button class="close-modal-btn">&times;</button>
+            <h2>Login</h2>
             <form id="login-form">
-                <div class="mb-4">
-                    <label for="login-email" class="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" id="login-email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                </div>
-                <div class="mb-6">
-                    <label for="login-password" class="block text-sm font-medium text-gray-700">Password</label>
-                    <input type="password" id="login-password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                </div>
-                <div id="login-error" class="text-red-500 text-sm mb-4"></div>
-                <div class="flex justify-end space-x-4">
-                    <button type="button" class="close-modal-btn px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Cancel</button>
-                    <button type="submit" class="btn-primary px-4 py-2">Login</button>
-                </div>
+                <div id="login-error" class="form-error"></div>
+                <label for="login-email">Email:</label>
+                <input type="email" id="login-email" required>
+                <label for="login-password">Password:</label>
+                <input type="password" id="login-password" required>
+                <button type="submit" class="btn btn-register">Login</button>
             </form>
         </div>
     </div>
 
-    <!-- Register Modal -->
-    <div id="register-modal" class="fixed inset-0 z-50 hidden items-center justify-center modal-backdrop">
-        <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md modal">
-            <h2 class="text-2xl font-bold mb-4">Register</h2>
+    <div id="register-modal" class="modal-backdrop hidden">
+        <div class="modal-content">
+            <button class="close-modal-btn">&times;</button>
+            <h2>Register</h2>
             <form id="register-form">
-                <div class="mb-4">
-                    <label for="register-name" class="block text-sm font-medium text-gray-700">Name</label>
-                    <input type="text" id="register-name" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                </div>
-                <div class="mb-4">
-                    <label for="register-email" class="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" id="register-email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                </div>
-                <div class="mb-6">
-                    <label for="register-password" class="block text-sm font-medium text-gray-700">Password</label>
-                    <input type="password" id="register-password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                </div>
-                <div id="register-error" class="text-red-500 text-sm mb-4"></div>
-                <div class="flex justify-end space-x-4">
-                    <button type="button" class="close-modal-btn px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Cancel</button>
-                    <button type="submit" class="btn-primary px-4 py-2">Register</button>
-                </div>
+                <div id="register-error" class="form-error"></div>
+                <label for="register-name">Name:</label>
+                <input type="text" id="register-name" required>
+                <label for="register-email">Email:</label>
+                <input type="email" id="register-email" required>
+                <label for="register-password">Password:</label>
+                <input type="password" id="register-password" required>
+                <button type="submit" class="btn btn-register">Register</button>
             </form>
         </div>
     </div>
 
-    <!-- Create/Edit Post Modal -->
-    <div id="post-modal" class="fixed inset-0 z-50 hidden items-center justify-center modal-backdrop">
-        <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-2xl overflow-y-auto max-h-[90vh] modal">
-            <div class="flex justify-between items-center mb-6">
-                <h3 id="post-modal-title" class="text-2xl font-bold">Create a New Post</h3>
-                <button class="text-gray-500 hover:text-gray-800 text-3xl close-modal-btn">&times;</button>
-            </div>
-            <form id="post-form" class="space-y-4">
+    <div id="post-modal" class="modal-backdrop hidden">
+        <div class="modal-content">
+            <button class="close-modal-btn">&times;</button>
+            <h2 id="post-modal-title">Create Post</h2>
+            <form id="post-form">
+                <div id="post-error" class="form-error"></div>
                 <input type="hidden" id="post-id">
-                <input type="hidden" id="post-image-url">
-                <div>
-                    <label for="post-title" class="block text-sm font-medium text-gray-700">Title</label>
-                    <input type="text" id="post-title" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500">
+                <label for="post-title">Title:</label>
+                <input type="text" id="post-title" required>
+                
+                <label for="post-category">Category:</label>
+                <select id="post-category" required>
+                    <option value="" disabled selected>Select a category</option>
+                </select>
+
+                <label for="post-content">Content:</label>
+                <textarea id="post-content" rows="8" required></textarea>
+                
+                <label for="post-image">Upload Image:</label>
+                <input type="file" id="post-image" accept="image/*">
+                
+                <div id="image-preview-container" class="hidden">
+                    <img id="image-preview" src="#" alt="Image Preview">
                 </div>
-                <div>
-                    <label for="post-category" class="block text-sm font-medium text-gray-700">Category</label>
-                    <select id="post-category" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500">
-                        <option value="" disabled selected>Select a category</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="post-image" class="block text-sm font-medium text-gray-700">Cover Image</label>
-                    <input type="file" id="post-image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                </div>
-                <div id="image-preview-container" class="hidden mt-4">
-                    <label class="block text-sm font-medium text-gray-700">Image Preview</label>
-                    <img id="image-preview" src="#" alt="Image Preview" class="mt-1 rounded-md max-h-48 w-full object-contain bg-gray-100">
-                </div>
-                <div>
-                    <label for="post-content" class="block text-sm font-medium text-gray-700">Content</label>
-                    <textarea id="post-content" rows="8" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
-                </div>
-                <div id="post-error" class="text-red-500 text-sm"></div>
-                <div class="flex justify-end">
-                    <button type="submit" class="btn-primary px-4 py-2 disabled:opacity-50">Save Post</button>
-                </div>
+                <input type="hidden" id="post-image-url"> 
+
+                <button type="submit" class="btn btn-register">Save Post</button>
             </form>
         </div>
     </div>
+    ...
+</main>
+</div>
 
-    
-    <script src="script.js"></script> 
+<div id="single-post-view" class="container hidden">
+    </div>
+
+<script src="script.js"></script>
 </body>
 </html>
-
