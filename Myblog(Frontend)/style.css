@@ -1,95 +1,839 @@
-/* --- Base and Body Styles --- */
-body {
-    font-family: 'Montserrat', sans-serif;
-    background-color: #f7f5f4; /* Soft background from our palette */
-    position: relative;
-    min-height: 100vh;
+/* ================== GLOBAL STYLES (From Step 1) ================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-/* The ::before pseudo-element creates the background image layer */
-body::before {
-    content: '';
+body {
+    font-family: 'Poppins', Arial, sans-serif;
+    color: #333;
+    
+    /* --- Your Image --- */
+    background-image: url('Image/medibackground.png'); 
+    
+    /* --- Helper properties --- */
+    background-color: #f4f7f6; /* Fallback color if image fails */
+    background-size: cover;    /* Makes image cover the whole screen */
+    background-position: center center; /* Centers the image */
+    background-attachment: fixed; /* Image stays in place on scroll */
+}
+
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+a {
+    text-decoration: none;
+    color: #e63946; /* Use Brand Red */
+}
+
+/* ================== HEADER (From Step 1) ================== */
+.header {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    padding: 15px 0;
+}
+
+.logo img {
+    height: 60px; 
+    width: auto;
+    vertical-align: middle;
+}
+
+/* Add this new rule */
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 30px; /* This creates a nice space between your logo and nav links */
+}
+
+/* Make sure your .navbar rule looks like this */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 70px; /* Gives the header a consistent height */
+}
+
+/* This removes default margins from the list that can break alignment */
+.nav-links {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    list-style: none;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #333;
+    text-transform: none;
+}
+
+.nav-links li {
+    margin-left: 30px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #555;
+    font-weight: 500;
+    text-transform: capitalize;
+    padding: 5px 0;
+    border-bottom: 2px solid transparent; /* A transparent border to prevent "jumping" */
+    transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #333; /* Makes the text a bit darker */
+    border-bottom: 2px solid #e63946; /* The red underline */
+}
+
+.auth-buttons .btn {
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-transform: capitalize;
+}
+.auth-buttons {
+    display: flex;
+    align-items: center; /* This is the line that vertically centers them */
+    gap: 10px;          /* This adds a nice space between the buttons */
+}
+.btn-login {
+    background-color: transparent;
+    color: #e63946; /* Using red from design */
+}
+
+.btn-register {
+    background-color: #e63946; /* Using red from design */
+    color: #ffffff;
+    border: 1px solid #e63946;
+}
+
+/* Make the login button have a background on hover */
+.btn-login:hover {
+    background-color: #fdf0f1; /* A very light red */
+}
+
+/* ================== NIGHT MODE TOGGLE BUTTON ================== */
+
+/* This new rule groups your theme button and auth buttons */
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.theme-toggle-btn {
+    background: #f0f0f0;
+    border: 1px solid #e0e0e0;
+    border-radius: 50%;
+    width: 32px;    /* <-- DECREASED SIZE */
+    height: 32px;   /* <-- DECREASED SIZE */
+    cursor: pointer;
+    font-size: 1.0rem;  /* <-- DECREASED SIZE */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    padding: 0; /* Remove default padding */
+}
+
+.theme-toggle-btn:hover {
+    background: #e0e0e0;
+}
+
+/* By default, show the moon icon and hide the sun */
+.theme-toggle-btn .icon-sun {
+    display: none;
+}
+
+/* ================== NEWS UPDATES SECTION ================== */
+.news-updates {
+    padding: 40px 0;
+}
+
+.news-updates h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    color: #ffffff;
+    opacity: 0.9;
+}
+
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+/* ================== NEWS CARD ================== */
+.news-card {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+}
+
+.news-card img {
+    width: 100%;
+    object-fit: cover;
+}
+
+.news-card .inline-img {
+    padding: 0 20px; /* To match spacing in design */
+    border-radius: 8px;
+}
+
+.card-content {
+    padding: 20px;
+    flex-grow: 1; /* Makes card content grow */
+}
+
+.card-meta {
+    font-size: 0.8rem;
+    color: #777;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.card-meta span:last-child {
+    margin-left: 15px;
+}
+
+.card-content h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.card-content p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.author {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.read-more {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #e63946; /* Brand Red */
+    text-decoration: none;
+    transition: transform 0.3s ease;
+}
+
+.read-more:hover {
+    transform: translateX(5px);
+}
+
+/* ================== TAGLINE SECTION ================== */
+.tagline {
+    text-align: center;
+    padding: 40px 0;
+    margin-bottom: 20px;
+    
+    /* No background color, as requested */
+}
+
+.tagline h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: #ffffff; /* Make it white */
+    opacity: 0.9;
+}
+
+/* ================== FOOTER (Professional Update - Option 1) ================== */
+
+.footer {
+    /* This light grey looks good in both light and dark mode */
+    background-color: #f8f9fa; 
+    border-top: 1px solid #e0e0e0;
+    padding: 50px 0;
+    margin-top: 40px;
+    width: 100%;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+}
+
+/* --- Left Column: Logo & Copyright --- */
+.footer-left {
+    flex-basis: 30%; /* Takes up about 30% of the space */
+    min-width: 200px;
+}
+
+.footer-logo-img {
+    height: 80px; /* Your custom height */
+    width: auto;
+    margin-bottom: 20px;
+    /* This makes the logo look good on the light footer */
+    background-color: #ffffff;
+    padding: 6px;
+    border-radius: 4px;
+}
+
+.footer-copyright {
+    font-size: 0.85rem;
+    color: #6c757d; /* A softer, professional grey */
+    line-height: 1.6;
+}
+
+/* --- Right Column: Links, Contact, Social --- */
+.footer-right {
+    flex-basis: 70%;
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.footer-col {
+    flex: 1; /* Each column in the right side shares space equally */
+}
+
+.footer-col h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333; /* Dark text for the light footer */
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.footer-col a,
+.footer-col p {
+    display: block;
+    font-size: 0.9rem;
+    color: #555; /* Dark text for the light footer */
+    text-decoration: none;
+    margin-bottom: 12px;
+    line-height: 1.5;
+}
+
+.footer-col a:hover {
+    color: #e63946; /* Use brand red for hover */
+    text-decoration: underline;
+}
+
+.footer-col p {
+    margin-bottom: 5px;
+}
+
+/* --- Social Media Icons --- */
+.footer-social {
+    display: flex;
+    gap: 12px;
+}
+
+.social-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    color: #555;
+    font-size: 1rem; /* FIXED TYPO (was 10rem) */
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.social-icon:hover {
+    background-color: #e63946; /* Brand Red */
+    color: #fff;
+    text-decoration: none;
+}
+
+/* ================== UTILITY CLASSES ================== */
+.hidden {
+    display: none !important;
+}
+
+/* ================== CATEGORIES ================== */
+.categories {
+    padding: 20px 0;
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 30px;
+    /* No background color, as requested */
+}
+.categories h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #ffffff; /* Make it white */
+    opacity: 0.9;
+}
+#categories-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.category-btn {
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+.category-btn.active {
+    background-color: #e63946; /* Main red color */
+    color: white;
+}
+.category-btn.inactive {
+    background-color: #f0f0f0;
+    color: #555;
+}
+.category-btn.inactive:hover {
+    background-color: #e0e0e0;
+}
+
+
+/* ================== USER INFO (HEADER) ================== */
+#user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+#user-info span {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+
+/* ================== MODALS ================== */
+.modal-backdrop {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: url('pexels-tirachard-kumtanom-112571-733857.jpg') no-repeat center center/cover;
-    opacity: 1;
-    z-index: -1;
-}
-
-/* --- Header / Navigation Bar Overrides --- */
-.site-header {
-    background: #1B3C53 !important; /* Override Tailwind bg-white */
-    color: #D2C1B6 !important;
-    position: relative; /* Needed for absolute logo positioning */
-}
-
-.logo {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #D2C1B6;
-    /* Centering the logo */
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    text-decoration: none; /* Ensure logo isn't underlined if it's an anchor tag */
-}
-
-/* Styling for auth links */
-#auth-links a, #auth-links button, #user-info button, #user-info span {
-    color: #D2C1B6;
-    font-weight: 600;
-}
-
-#auth-links button:hover, #user-info button:hover {
-     background-color: rgba(210, 193, 182, 0.1);
-     border-radius: 5px;
-}
-
-/* Primary action button style */
-.btn-primary {
-    background-color: #456882 !important;
-    color: #f7f5f4 !important;
-    border-radius: 5px;
-    font-weight: 600;
-    transition: background-color 0.3s ease;
-}
-
-.btn-primary:hover {
-    background-color: #3a5a73 !important;
-}
-
-/* --- Main Content Area --- */
-.main-content-card {
-     background-color: rgba(255, 255, 255, 0.85);
-     border-radius: 8px;
-     box-shadow: 0 4px 15px rgba(0,0,0,0.07);
-     backdrop-filter: blur(5px);
-     padding: 2rem;
-     margin-top: 2rem;
-}
-
-/* --- Modal Styles --- */
-.modal-backdrop {
     background-color: rgba(0, 0, 0, 0.6);
-}
-.modal h2, .modal h3 {
-     color: #1B3C53;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
 }
 
-/* --- Custom Scrollbar --- */
-::-webkit-scrollbar {
-    width: 8px;
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
 }
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
+
+.close-modal-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 2rem;
+    color: #aaa;
+    background: none;
+    border: none;
+    cursor: pointer;
 }
-::-webkit-scrollbar-thumb {
-    background: #888;
+.close-modal-btn:hover {
+    color: #333;
+}
+
+/* ================== FORMS ================== */
+.modal-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.modal-content h2 {
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 600;
+}
+.modal-content label {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+.modal-content input[type="text"],
+.modal-content input[type="email"],
+.modal-content input[type="password"],
+.modal-content input[type="file"],
+.modal-content select,
+.modal-content textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+}
+.modal-content textarea {
+    resize: vertical;
+}
+.modal-content .btn {
+    margin-top: 10px;
+    padding: 12px;
+    font-size: 1rem;
+}
+.form-error {
+    color: #e63946;
+    font-size: 0.9rem;
+    text-align: center;
+    margin-bottom: 10px;
+}
+#image-preview-container {
+    margin-top: 10px;
+}
+#image-preview {
+    max-width: 100%;
+    height: auto;
+    max-height: 200px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+
+/* ================== SINGLE POST VIEW ================== */
+#single-post-view .post-full-image {
+    width: 100%;
+    max-height: 500px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+#single-post-view .post-content-wrapper {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-top: 40px;
+}
+#single-post-view h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+#single-post-view .post-meta-single {
+    font-size: 0.9rem;
+    color: #777;
+    margin-bottom: 25px;
+}
+#single-post-view .post-content-full {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #333;
+}
+#single-post-view .post-content-full p {
+    margin-bottom: 20px;
+}
+#comments-section {
+    margin-top: 40px;
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+#comments-section h3 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+#comments-list .comment {
+    border-bottom: 1px solid #f0f0f0;
+    padding: 15px 0;
+}
+#comments-list .comment:last-child {
+    border-bottom: none;
+}
+.comment p {
+    margin-bottom: 5px;
+}
+.comment-meta {
+    font-size: 0.8rem;
+    color: #888;
+}
+#comment-form {
+    margin-top: 30px;
+}
+#comment-form h4 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+#comment-content {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: 'Poppins', sans-serif;
+    resize: vertical;
+}
+#comment-form button {
+    margin-top: 10px;
+    background-color: #e63946;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+/* ==================================================================
+  DARK MODE THEME (Brand Red Accent) - FOR "OPTION 1"
+================================================================== */
+
+/* When dark mode is on, hide the moon and show the sun */
+body.dark-mode .theme-toggle-btn .icon-moon {
+    display: none;
+}
+body.dark-mode .theme-toggle-btn .icon-sun {
+    display: block;
+}
+
+/* Base Body */
+body.dark-mode {
+    /* The background image is already handled by the `body` rule */
+    color: #e0e0e0;
+}
+
+/* Header */
+body.dark-mode .header {
+    background-color: #242424;
+    border-color: #333;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Nav Links */
+body.dark-mode .nav-links a {
+    color: #e0e0e0;
+}
+body.dark-mode .nav-links a:hover {
+    color: #ffffff;
+    border-bottom-color: #e63946; /* Brand Red */
+}
+
+/* Cards & Content Sections */
+body.dark-mode .news-card {
+    background-color: #242424;
+    border-color: #333;
+}
+body.dark-mode #single-post-view .post-content-wrapper,
+body.dark-mode #comments-section {
+    background-color: #242424;
+    border-color: #333;
+}
+
+body.dark-mode .categories {
+    border-bottom-color: #333; /* Make border dark */
+}
+
+/* Headings */
+body.dark-mode h2, /* Fixed typo dark-body -> dark-mode */
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode .card-content h3,
+body.dark-mode .nav-links a,
+body.dark-mode .author {
+    color: #ffffff;
+}
+
+/* Body Text */
+body.dark-mode p,
+body.dark-mode .card-meta {
+    color: #b0b0b0;
+}
+
+/* Links & Accents */
+body.dark-mode a,
+body.dark-mode .read-more {
+    color: #e63946; /* Brand Red */
+}
+
+/* Category Buttons */
+body.dark-mode .category-btn.inactive {
+    background-color: #333;
+    color: #e0e0e0;
+}
+body.dark-mode .category-btn.inactive:hover {
+    background-color: #444;
+}
+body.dark-mode .category-btn.active {
+    background-color: #e63946; /* Brand Red */
+    color: #ffffff;
+}
+
+/* Auth Buttons */
+body.dark-mode .btn-login {
+    color: #e63946; /* Brand Red */
+}
+body.dark-mode .btn-login:hover {
+    background-color: #333;
+}
+body.dark-mode .btn-register,
+body.dark-mode #comment-form button {
+    background-color: #e63946; /* Brand Red */
+    color: #ffffff;
+    border-color: #e63946;
+}
+
+body.dark-mode .theme-toggle-btn {
+    background: #333;
+    border-color: #444;
+    color: #e63946; /* Brand Red */
+}
+
+/* Modals & Forms */
+body.dark-mode .modal-content {
+    background-color: #242424;
+}
+body.dark-mode .modal-content label {
+    color: #e0e0e0;
+}
+body.dark-mode .modal-content input[type="text"],
+body.dark-mode .modal-content input[type="email"],
+body.dark-mode .modal-content input[type="password"],
+body.dark-mode .modal-content input[type="file"],
+body.dark-mode .modal-content select,
+body.dark-mode .modal-content textarea,
+body.dark-mode #comment-content {
+    background-color: #1a1a1a;
+    border-color: #444;
+    color: #e0e0e0;
+}
+/* --- Fix for Dark Mode Footer --- */
+
+body.dark-mode .footer {
+    background-color: #242424; /* Dark charcoal background */
+    border-color: #333;
+}
+
+/* This rule makes your footer logo visible in dark mode */
+body.dark-mode .footer-logo-img {
+    background-color: #ffffff;
+    padding: 6px;
     border-radius: 4px;
 }
-::-webkit-scrollbar-thumb:hover {
-    background: #555;
+
+/* These rules set all the footer text to a light color */
+body.dark-mode .footer-copyright,
+body.dark-mode .footer-col p,
+body.dark-mode .footer-col a {
+    color: #b0b0b0;
+}
+
+body.dark-mode .footer-col h4 {
+    color: #ffffff;
+}
+
+/* This sets the link hover color */
+body.dark-mode .footer-col a:hover {
+    color: #e63946; /* Brand Red */
+}
+
+/* This styles the social icons for dark mode */
+body.dark-mode .social-icon {
+    background-color: #333;
+    color: #e0e0e0;
+}
+
+body.dark-mode .social-icon:hover {
+    background-color: #e63946; /* Brand Red */
+    color: #ffffff;
+}
+
+/* ================== FIX FOR SOCIAL ICONS ================== */
+
+/* This rule is the main fix. 
+  It forces the "Brands" icons to use their specific font.
+*/
+.social-icon .fa-brands {
+    font-family: "Font Awesome 6 Brands";
+    font-weight: 400; /* This is the key! */
+}
+
+/* This rule applies a consistent size directly to the icon,
+  which helps with centering.
+*/
+.social-icon i {
+    font-size: 1.1rem; /* You can adjust this size */
+}
+
+/* ================== DARK MODE TEXT VISIBILITY FIX ================== */
+
+/* --- Single Post: Title --- */
+body.dark-mode #single-post-view h2 {
+    color: #ffffff;
+}
+
+/* --- Single Post: Meta Text (By demo in Stories...) --- */
+body.dark-mode #single-post-view .post-meta-single {
+    color: #b0b0b0; /* Light grey for meta text */
+}
+
+/* --- Single Post: Main Body Content --- */
+body.dark-mode #single-post-view .post-content-full,
+body.dark-mode #single-post-view .post-content-full p {
+    color: #e0e0e0; /* Main light text */
+}
+
+/* --- Comments Section: "Comments (1)" Title --- */
+body.dark-mode #comments-section h3 {
+    color: #ffffff;
+}
+
+/* --- Comments Section: "Leave a Comment" Title --- */
+body.dark-mode #comments-section #comment-form h4 {
+    color: #ffffff;
+}
+
+/* --- Comments Section: Comment Content --- */
+body.dark-mode #comments-list .comment p {
+    color: #e0e0e0; /* Main light text */
+}
+
+/* --- Comments Section: Comment Meta (By Feed...) --- */
+body.dark-mode #comments-list .comment-meta {
+    color: #b0b0b0; /* Light grey for meta text */
 }
