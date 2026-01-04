@@ -6,22 +6,20 @@ document.addEventListener('DOMContentLoaded', () => {
         posts: [],
         categories: [],
         currentPost: null,
-        apiBaseUrl: 'http://localhost:8080/api'
+        apiBaseUrl: 'http://localhost:8080/api' // Make sure this is your correct backend URL
     };
 
-    // --- SELECTORS ---
+    // --- SELECTORS (Updated for new HTML) ---
     const allPostsView = document.getElementById('all-posts-view');
     const singlePostView = document.getElementById('single-post-view');
     const postsContainer = document.getElementById('posts-container');
-    // A selector for categories container seems to be missing in the HTML, 
-    // but the JS references it. I'll add a placeholder check for it.
     const categoriesContainer = document.getElementById('categories-container');
     const authLinks = document.getElementById('auth-links');
     const userInfo = document.getElementById('user-info');
     const userEmailSpan = document.getElementById('user-email');
-    const homeLink = document.querySelector('.logo'); // Changed to select the logo
-    const loginBtn = document.getElementById('login-btn');
-    const registerBtn = document.getElementById('register-btn');
+    const homeLink = document.getElementById('home-link'); // Changed to ID
+    const loginBtn = document.querySelector('.btn-login');
+    const registerBtn = document.querySelector('.btn-register');
     const logoutBtn = document.getElementById('logout-btn');
     const createPostNavBtn = document.getElementById('create-post-nav-btn');
     const loginModal = document.getElementById('login-modal');
@@ -34,7 +32,48 @@ document.addEventListener('DOMContentLoaded', () => {
     const imagePreview = document.getElementById('image-preview');
     const imagePreviewContainer = document.getElementById('image-preview-container');
 
-    // --- API SERVICE ---
+    // ================== DARK MODE SCRIPT ==================
+   const themeToggleBtns = document.querySelectorAll('.theme-toggle-btn'); // <-- Use querySelectorAll
+const bodyElement = document.body;
+
+// Function to set the theme
+function setTheme(theme) {
+    if (theme === 'dark') {
+        bodyElement.classList.add('dark-mode');
+        localStorage.setItem('theme', 'dark'); // Save preference
+    } else {
+        bodyElement.classList.remove('dark-mode');
+        localStorage.setItem('theme', 'light'); // Save preference
+    }
+}
+
+// Add click listener to ALL buttons that have the class
+if (themeToggleBtns.length > 0) {
+    themeToggleBtns.forEach(btn => { // <-- Loop through each button
+        btn.addEventListener('click', () => {
+            if (bodyElement.classList.contains('dark-mode')) {
+                setTheme('light');
+            } else {
+                setTheme('dark');
+            }
+        });
+    });
+}
+
+// Check for saved theme on page load
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme) {
+    setTheme(savedTheme);
+} else {
+    // Optional: Set default based on user's computer preference
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        setTheme('dark');
+    } else {
+        setTheme('light');
+    }
+}
+
+    // --- API SERVICE (Same as your old code) ---
     async function apiRequest(endpoint, method = 'GET', body = null, requiresAuth = false) {
         const headers = new Headers({ 'Content-Type': 'application/json' });
         if (requiresAuth && state.token) {
@@ -57,125 +96,191 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- RENDER FUNCTIONS ---
+    // --- RENDER FUNCTIONS (CRITICAL UPDATE) ---
+
+    /**
+     * Renders all posts.
+     * This function's HTML is now completely rewritten to match the new style.css
+     */
     function renderAllPosts() {
         allPostsView.classList.remove('hidden');
         singlePostView.classList.add('hidden');
+        if (!postsContainer) return; // Guard clause
+        
         postsContainer.innerHTML = '';
         if (state.posts.length === 0) {
-            postsContainer.innerHTML = '<p class="text-gray-500">No posts found.</p>';
+            postsContainer.innerHTML = '<p>No posts found.</p>';
             return;
         }
 
         state.posts.forEach(post => {
-            const postCard = document.createElement('div');
-            postCard.className = 'bg-white rounded-lg shadow-md overflow-hidden';
-            const isAuthor = state.user && state.user.id === post.author.id;
+            const postCard = document.createElement('article');
+            postCard.className = 'news-card';
+            
+            const isAuthor = state.user && post.author && state.user.id === post.author.id;
             const authorControlsHTML = isAuthor ? `
-                <div class="mt-4 pt-4 border-t flex justify-end space-x-3">
-                    <button class="edit-post-btn text-sm text-blue-500 hover:underline" data-post-id="${post.id}">Edit ✏️</button>
-                    <button class="delete-post-btn text-sm text-red-500 hover:underline" data-post-id="${post.id}">Delete 🗑️</button>
+                <div class="author-controls" style="margin-top: 10px; border-top: 1px solid #f0f0f0; padding-top: 10px;">
+                    <button class="edit-post-btn btn-link" data-post-id="${post.id}">Edit</button>
+                    <button class="delete-post-btn btn-link-danger" data-post-id="${post.id}">Delete</button>
                 </div>` : '';
             
+            // Handle image URL
+            const imageUrl = post.imageUrl 
+                ? (post.imageUrl.startsWith('http') ? post.imageUrl : `${state.apiBaseUrl.replace('/api', '')}${post.imageUrl}`)
+                : 'https://via.placeholder.com/400x250.png?text=No+Image';
+
+            const postDate = new Date(post.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+            const authorName = post.author ? post.author.name : 'Unknown Author';
+
+            // --- NEW CARD HTML (to match new CSS) ---
             postCard.innerHTML = `
-                ${post.imageUrl ? `<img src="http://localhost:8080${post.imageUrl}" alt="${post.title}" class="w-full h-48 object-contain bg-slate-100">` : ''}
-                <div class="p-6">
-                    <span class="text-sm text-indigo-500 font-semibold">${post.category.name}</span>
-                    <h3 class="text-xl font-bold mt-2 mb-2 text-gray-800 cursor-pointer hover:text-indigo-600" data-post-id="${post.id}">${post.title}</h3>
-                    <p class="text-gray-600 text-sm mb-4">By ${post.author.name} on ${new Date(post.createdAt).toLocaleDateString()}</p>
-                    <p class="text-gray-700 leading-relaxed">${post.content.substring(0, 100)}...</p>
+                <img src="${imageUrl}" alt="${post.title}">
+                <div class="card-content">
+                    <div class="card-meta">
+                        <span>${postDate}</span>
+                        <span>${post.comments ? post.comments.length : 0} Comments</span>
+                    </div>
+                    <h3>
+                        <a href="#" class="post-link" data-post-id="${post.id}">${post.title}</a>
+                    </h3>
+                    <p>${post.content.substring(0, 100)}...</p>
+                    <div class="card-footer">
+                        <span class="author">${authorName}</span>
+                        <a href="#" class="read-more post-link" data-post-id="${post.id}">Read More &rarr;</a>
+                    </div>
                     ${authorControlsHTML}
                 </div>`;
+            // --- END OF NEW CARD HTML ---
+
             postsContainer.appendChild(postCard);
         });
     }
 
-    function renderSinglePost() {
-        allPostsView.classList.add('hidden');
-        singlePostView.classList.remove('hidden');
-        const post = state.currentPost;
-        if (!post) return;
+    /**
+     * Renders a single post.
+     * This function's HTML is also new, to create the single post view.
+     */
+   function renderSinglePost() {
+    allPostsView.classList.add('hidden');
+    singlePostView.classList.remove('hidden');
+    
+    const post = state.currentPost;
+    if (!post) return;
 
-        const isAuthor = state.user && state.user.id === post.author.id;
+    const isAuthor = state.user && post.author && state.user.id === post.author.id;
+    const authorControlsHTML = isAuthor ? `
+        <div class="author-controls-single" style="margin-bottom: 20px;">
+            <button class="edit-post-btn btn-link" data-post-id="${post.id}">Edit Post</button>
+            <button class="delete-post-btn btn-link-danger" data-post-id="${post.id}">Delete Post</button>
+        </div>` : '';
 
-        singlePostView.innerHTML = `
-            ${post.imageUrl ? `<img src="http://localhost:8080${post.imageUrl}" alt="${post.title}" class="w-full h-96 object-contain bg-slate-100 rounded-lg shadow-lg mb-8">` : ''}
-            <div class="bg-white p-8 rounded-lg shadow-lg">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h2 class="text-4xl font-bold text-gray-900">${post.title}</h2>
-                        <p class="text-md text-gray-500 mt-2">By ${post.author.name} in <span class="font-semibold text-indigo-500">${post.category.name}</span></p>
-                        <p class="text-sm text-gray-400">Posted on ${new Date(post.createdAt).toLocaleString()}</p>
-                    </div>
-                    ${isAuthor ? `
-                    <div class="flex space-x-2">
-                        <button class="edit-post-btn text-blue-500 hover:underline" data-post-id="${post.id}">Edit</button>
-                        <button class="delete-post-btn text-red-500 hover:underline" data-post-id="${post.id}">Delete</button>
-                    </div>` : ''}
-                </div>
-                <div class="prose max-w-none mt-8 text-gray-800">${post.content.replace(/\n/g, '<br>')}</div>
-            </div>
+    const imageUrl = post.imageUrl 
+        ? (post.imageUrl.startsWith('http') ? post.imageUrl : `${state.apiBaseUrl.replace('/api', '')}${post.imageUrl}`)
+        : '';
+    
+    const postDate = new Date(post.createdAt).toLocaleString();
+    const authorName = post.author ? post.author.name : 'Unknown Author';
+    const categoryName = post.category ? post.category.name : 'Uncategorized';
+
+    // --- HTML STRUCTURE IS CHANGED HERE ---
+    singlePostView.innerHTML = `
+        <div class="post-content-wrapper">
             
-            <div class="mt-12">
-                <h3 class="text-2xl font-bold mb-6">Comments (${post.comments ? post.comments.length : 0})</h3>
-                <div id="comments-list" class="space-y-6">
-                    ${post.comments && post.comments.map(comment => `
-                        <div class="bg-white p-4 rounded-lg shadow">
-                            <p class="text-gray-800">${comment.content}</p>
-                            <p class="text-xs text-gray-400 mt-2">By ${comment.author.name} on ${new Date(comment.createdAt).toLocaleString()}</p>
-                        </div>
-                    `).join('')}
-                    ${!post.comments || post.comments.length === 0 ? '<p class="text-gray-500">No comments yet.</p>' : ''}
+            ${imageUrl ? `<img src="${imageUrl}" alt="${post.title}" class="post-full-image">` : ''}
+            
+            <div class="post-text-content">
+                ${authorControlsHTML}
+                <h2>${post.title}</h2>
+                <div class="post-meta-single">
+                    By <strong>${authorName}</strong> in <strong>${categoryName}</strong>
+                    <br>
+                    On ${postDate}
                 </div>
-                
-                ${state.token ? `
-                <form id="comment-form" class="mt-8">
-                    <h4 class="text-lg font-semibold mb-2">Leave a Comment</h4>
-                    <textarea id="comment-content" rows="4" required class="w-full p-2 border rounded-md" placeholder="Write your comment..."></textarea>
-                    <button type="submit" class="mt-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Submit Comment</button>
-                </form>` : '<p class="mt-8 text-gray-600">You must be <span id="login-from-comment" class="text-indigo-600 cursor-pointer hover:underline">logged in</span> to comment.</p>'}
-            </div>`;
-    }
+                <div class="post-content-full">
+                    ${post.content.replace(/\n/g, '<br>')}
+                </div>
+            </div>
 
+        </div> <div id="comments-section">
+             <h3>Comments (${post.comments ? post.comments.length : 0})</h3>
+             <div id="comments-list">
+                 ${post.comments && post.comments.length > 0 ? 
+                     post.comments.map(comment => `
+                         <div class="comment">
+                             <p>${comment.content}</p>
+                             <div class="comment-meta">
+                                 By <strong>${comment.author.name}</strong> on ${new Date(comment.createdAt).toLocaleString()}
+                             </div>
+                         </div>
+                     `).join('') 
+                     : '<p>No comments yet.</p>'}
+             </div>
+             
+             ${state.token ? `
+                 <form id="comment-form">
+                     <h4>Leave a Comment</h4>
+                     <textarea id="comment-content" rows="4" required placeholder="Write your comment..."></textarea>
+                     <button type="submit">Submit Comment</button>
+                 </form>` 
+                 : '<p style="margin-top: 20px;">You must be <span id="login-from-comment" class="btn-link">logged in</span> to comment.</p>'}
+        </div>
+    `;
+}
+
+    /**
+     * Renders category filter buttons.
+     */
     function renderCategories() {
         if (!categoriesContainer) return; // Guard clause
-        categoriesContainer.innerHTML = '';
+        
+        categoriesContainer.innerHTML = ''; // Clear existing
+        
+        // Add 'All' button
         const allButton = document.createElement('button');
-        allButton.className = 'category-btn bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition';
+        allButton.className = 'category-btn active'; // Active by default
         allButton.textContent = 'All Posts';
         allButton.dataset.categoryId = 'all';
         categoriesContainer.appendChild(allButton);
 
+        // Add buttons for each category
         state.categories.forEach(category => {
             const categoryButton = document.createElement('button');
-            categoryButton.className = 'category-btn bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300 transition';
+            categoryButton.className = 'category-btn inactive';
             categoryButton.textContent = category.name;
             categoryButton.dataset.categoryId = category.id;
             categoriesContainer.appendChild(categoryButton);
         });
     }
 
+    /**
+     * Updates header UI based on login state.
+     */
     function updateUIForAuthState() {
         if (state.token) {
             authLinks.classList.add('hidden');
             userInfo.classList.remove('hidden');
-            userInfo.classList.add('flex');
-            userEmailSpan.textContent = state.user.email;
+            userEmailSpan.textContent = state.user.name || state.user.email; // Show name if available
         } else {
             authLinks.classList.remove('hidden');
             userInfo.classList.add('hidden');
             userEmailSpan.textContent = '';
         }
+        // Re-render views to show/hide author controls
         if (!singlePostView.classList.contains('hidden')) renderSinglePost();
         if (!allPostsView.classList.contains('hidden')) renderAllPosts();
     }
 
+    /**
+     * Populates the category dropdown in the Create/Edit Post modal.
+     */
     async function populateCategoriesDropdown() {
         try {
             if (state.categories.length === 0) {
                  state.categories = await apiRequest('/categories');
             }
             const categorySelect = document.getElementById('post-category');
+            if (!categorySelect) return;
+            
             categorySelect.innerHTML = '<option value="" disabled selected>Select a category</option>';
             state.categories.forEach(cat => {
                 const option = document.createElement('option');
@@ -184,32 +289,33 @@ document.addEventListener('DOMContentLoaded', () => {
                 categorySelect.appendChild(option);
             });
         } catch (error) {
-            console.error("Failed to load categories", error);
+            console.error("Failed to load categories for dropdown", error);
         }
     }
 
-    function showModal(modal) { modal.classList.remove('hidden'); modal.classList.add('flex'); }
-    function hideModal(modal) { modal.classList.remove('flex'); modal.classList.add('hidden'); }
+    // --- MODAL FUNCTIONS (Updated) ---
+    function showModal(modal) { modal.classList.remove('hidden'); }
+    function hideModal(modal) { modal.classList.add('hidden'); }
     
     document.querySelectorAll('.close-modal-btn').forEach(btn => {
         btn.addEventListener('click', (e) => hideModal(e.target.closest('.modal-backdrop')));
     });
 
-    loginBtn.addEventListener('click', () => showModal(loginModal));
-    registerBtn.addEventListener('click', () => showModal(registerModal));
-    homeLink.addEventListener('click', (e) => { e.preventDefault(); fetchAndRenderPosts(); });
+    // --- EVENT LISTENERS (Updated Selectors) ---
+    if (loginBtn) loginBtn.addEventListener('click', () => showModal(loginModal));
+    if (registerBtn) registerBtn.addEventListener('click', () => showModal(registerModal));
+    if (homeLink) homeLink.addEventListener('click', (e) => { e.preventDefault(); fetchAndRenderPosts(); });
 
-    logoutBtn.addEventListener('click', () => {
+    if (logoutBtn) logoutBtn.addEventListener('click', () => {
         state.token = null;
         state.user = null;
         localStorage.removeItem('blogToken');
         localStorage.removeItem('blogUser');
-        window.location.hash = '';
         updateUIForAuthState();
-        fetchAndRenderPosts();
+        fetchAndRenderPosts(); // Re-fetch posts to hide auth controls
     });
 
-    createPostNavBtn.addEventListener('click', () => {
+    if (createPostNavBtn) createPostNavBtn.addEventListener('click', () => {
         document.getElementById('post-modal-title').textContent = 'Create a New Post';
         postForm.reset();
         document.getElementById('post-id').value = '';
@@ -218,7 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showModal(postModal);
     });
 
-    postImageInput.addEventListener('change', (e) => {
+    if (postImageInput) postImageInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
@@ -230,7 +336,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    loginForm.addEventListener('submit', async (e) => {
+    // --- FORM SUBMISSIONS (Same Logic) ---
+    if (loginForm) loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById('login-email').value;
         const password = document.getElementById('login-password').value;
@@ -239,6 +346,7 @@ document.addEventListener('DOMContentLoaded', () => {
             errorDiv.textContent = '';
             const data = await apiRequest('/auth/login', 'POST', { email, password });
             state.token = data.token;
+            // Decode token to get user info (assumes JWT structure)
             const payload = JSON.parse(atob(state.token.split('.')[1]));
             state.user = { email: payload.sub, id: payload.userId, name: payload.name };
             localStorage.setItem('blogToken', state.token);
@@ -250,7 +358,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    registerForm.addEventListener('submit', async (e) => {
+    if (registerForm) registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const name = document.getElementById('register-name').value;
         const email = document.getElementById('register-email').value;
@@ -260,19 +368,18 @@ document.addEventListener('DOMContentLoaded', () => {
             errorDiv.textContent = '';
             await apiRequest('/auth/register', 'POST', { name, email, password });
             hideModal(registerModal);
-            showModal(loginModal);
-            document.getElementById('login-email').value = email;
-            document.getElementById('login-password').value = '';
+            showModal(loginModal); // Show login modal after successful registration
+            document.getElementById('login-email').value = email; // Pre-fill email
         } catch (error) {
             errorDiv.textContent = `Registration failed: ${error.message}`;
         }
     });
 
-    postForm.addEventListener('submit', async (e) => {
+    if (postForm) postForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const errorDiv = document.getElementById('post-error');
         errorDiv.textContent = '';
-        const submitBtn = document.querySelector('#post-form button[type="submit"]');
+        const submitBtn = postForm.querySelector('button[type="submit"]');
         submitBtn.disabled = true;
         
         try {
@@ -282,6 +389,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (imageFile) {
                 const formData = new FormData();
                 formData.append('file', imageFile);
+                // Note: File upload endpoint might be different from JSON API
                 const uploadResponse = await fetch(`${state.apiBaseUrl}/upload`, {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${state.token}` },
@@ -292,7 +400,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     throw new Error(err.message || 'Image upload failed!');
                 }
                 const result = await uploadResponse.json();
-                imageUrl = result.url;
+                imageUrl = result.url; // Assumes backend returns { "url": "..." }
             }
 
             const postId = document.getElementById('post-id').value;
@@ -309,7 +417,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 await apiRequest('/posts', 'POST', postData, true);
             }
             hideModal(postModal);
-            await fetchAndRenderPosts();
+            await fetchAndRenderPosts(); // Refresh post list
         } catch (error) {
             errorDiv.textContent = `Failed to save post: ${error.message}`;
         } finally {
@@ -317,12 +425,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- DYNAMIC EVENT LISTENERS (for clicks on posts, comments, etc.) ---
     document.body.addEventListener('click', async (e) => {
-        if (e.target.matches('h3[data-post-id]')) {
-            const postId = e.target.dataset.postId;
+        
+        // --- Click on a post link (title or read more) ---
+        const postLink = e.target.closest('.post-link');
+        if (postLink) {
+            e.preventDefault();
+            const postId = postLink.dataset.postId;
             await fetchAndRenderSinglePost(postId);
         }
 
+        // --- Click on 'Edit Post' ---
         if (e.target.matches('.edit-post-btn')) {
             const postId = e.target.dataset.postId;
             const postToEdit = await apiRequest(`/posts/${postId}`);
@@ -333,8 +447,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('post-content').value = postToEdit.content;
                 document.getElementById('post-category').value = postToEdit.category.id;
                 document.getElementById('post-image-url').value = postToEdit.imageUrl || '';
+                
                 if (postToEdit.imageUrl) {
-                    imagePreview.src = `http://localhost:8080${postToEdit.imageUrl}`;
+                    const fullImageUrl = postToEdit.imageUrl.startsWith('http') 
+                        ? postToEdit.imageUrl 
+                        : `${state.apiBaseUrl.replace('/api', '')}${postToEdit.imageUrl}`;
+                    imagePreview.src = fullImageUrl;
                     imagePreviewContainer.classList.remove('hidden');
                 } else {
                     imagePreview.src = '#';
@@ -344,42 +462,51 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // --- Click on 'Delete Post' ---
         if (e.target.matches('.delete-post-btn')) {
             const postId = e.target.dataset.postId;
             if (confirm('Are you sure you want to delete this post?')) {
                 try {
                     await apiRequest(`/posts/${postId}`, 'DELETE', null, true);
-                    await fetchAndRenderPosts();
+                    // If on single post view, go home. Otherwise, refresh list.
+                    if (!singlePostView.classList.contains('hidden')) {
+                        await fetchAndRenderPosts();
+                    } else {
+                        await fetchAndRenderPosts(document.querySelector('.category-btn.active').dataset.categoryId);
+                    }
                 } catch (error) {
                     alert(`Failed to delete post: ${error.message}`);
                 }
             }
         }
 
+        // --- Click on a category button ---
         if (e.target.matches('.category-btn')) {
             const categoryId = e.target.dataset.categoryId;
             document.querySelectorAll('.category-btn').forEach(btn => {
-                btn.classList.remove('bg-indigo-600', 'text-white');
-                btn.classList.add('bg-gray-200', 'text-gray-800');
+                btn.classList.remove('active');
+                btn.classList.add('inactive');
             });
-            e.target.classList.add('bg-indigo-600', 'text-white');
-            e.target.classList.remove('bg-gray-200', 'text-gray-800');
+            e.target.classList.add('active');
+            e.target.classList.remove('inactive');
             await fetchAndRenderPosts(categoryId === 'all' ? null : categoryId);
         }
         
+        // --- Click 'login' from comment section ---
         if (e.target.matches('#login-from-comment')) {
             showModal(loginModal);
         }
     });
 
-    singlePostView.addEventListener('submit', async (e) => {
+    // --- Comment form submission (only listens on singlePostView) ---
+    if (singlePostView) singlePostView.addEventListener('submit', async (e) => {
         if (e.target.matches('#comment-form')) {
             e.preventDefault();
             const content = document.getElementById('comment-content').value;
             try {
                 await apiRequest(`/posts/${state.currentPost.id}/comments`, 'POST', { content }, true);
-                document.getElementById('comment-content').value = '';
-                await fetchAndRenderSinglePost(state.currentPost.id);
+                document.getElementById('comment-content').value = ''; // Clear form
+                await fetchAndRenderSinglePost(state.currentPost.id); // Refresh post
             } catch (error) {
                 alert(`Failed to add comment: ${error.message}`);
             }
@@ -393,7 +520,7 @@ document.addEventListener('DOMContentLoaded', () => {
             state.posts = await apiRequest(endpoint);
             renderAllPosts();
         } catch (error) {
-            postsContainer.innerHTML = `<p class="text-red-500">Error loading posts: ${error.message}. Is the backend running?</p>`;
+            if (postsContainer) postsContainer.innerHTML = `<p style="color: red;">Error loading posts: ${error.message}. Is the backend running?</p>`;
         }
     }
 
@@ -401,8 +528,9 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             state.currentPost = await apiRequest(`/posts/${postId}`);
             renderSinglePost();
+            window.scrollTo(0, 0); // Scroll to top to see the post
         } catch (error) {
-            singlePostView.innerHTML = `<p class="text-red-500">Error loading post: ${error.message}</p>`;
+            singlePostView.innerHTML = `<p style="color: red;">Error loading post: ${error.message}</p>`;
         }
     }
 
@@ -439,4 +567,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initializeApp();
 });
-
